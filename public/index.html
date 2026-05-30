@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unwatermark — Remove Gemini AI Watermarks Instantly</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #09080a;
+  --bg2: #110f14;
+  --bg3: #1a1720;
+  --cream: #f0e6d0;
+  --cream-dim: #9e9282;
+  --lime: #c6f135;
+  --lime-dim: #8aab22;
+  --border: rgba(240,230,208,0.08);
+  --border-hover: rgba(240,230,208,0.18);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- NAV ---- */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: rgba(9,8,10,0.7);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.nav-logo-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--lime);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--cream-dim);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--cream); }
+
+.nav-cta {
+  background: var(--lime);
+  color: #0a0905 !important;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: opacity 0.2s !important;
+}
+
+.nav-cta:hover { opacity: 0.85; }
+
+/* ---- HERO ---- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(198,241,53,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 16px 6px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cream-dim);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--lime);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(52px, 8vw, 100px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--cream);
+  max-width: 900px;
+  margin-bottom: 28px;
+}
+
+.hero-title .accent {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--lime);
+  font-weight: 400;
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--cream-dim);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: var(--lime);
+  color: #0a0905;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+}
+
+.btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid var(--border-hover);
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-outline:hover {
+  border-color: rgba(240,230,208,0.35);
+  background: rgba(240,230,208,0.04);
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+
+.stat-item { text-align: center; }
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--cream);
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--cream-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+}
+
+/* ---- SECTION SHARED ---- */
+section {
+  padding: 100px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--lime);
+  margin-bottom: 20px;
+}
+
+.section-label::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--lime);
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--cream-dim);
+  max-width: 480px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ---- BEFORE / AFTER DEMO ---- */
+.demo-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+}
+
+.demo-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.slider-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: col-resize;
+  user-select: none;
+  background: #000;
+  border: 1px solid var(--border);
+  aspect-ratio: 11/6;
+}
+
+.slider-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.slider-img.before {
+  z-index: 2;
+  clip-path: inset(0 calc(100% - var(--pct, 50%)) 0 0);
+}
+
+.slider-img.after {
+  z-index: 1;
+}
+
+.slider-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pct, 50%);
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 3px;
+  background: var(--lime);
+  pointer-events: none;
+}
+
+.slider-handle::before,
+.slider-handle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  background: var(--lime);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-handle::before { top: 50%; transform: translate(-50%, -50%); }
+.slider-handle::after { display: none; }
+
+.slider-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--pct, 50%);
+  transform: translate(-50%, -50%);
+  z-index: 11;
+  width: 44px;
+  height: 44px;
+  background: var(--lime);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  box-shadow: 0 0 0 4px rgba(198,241,53,0.2);
+}
+
+.slider-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: #0a0905;
+}
+
+.slider-label {
+  position: absolute;
+  top: 16px;
+  z-index: 12;
+  background: rgba(9,8,10,0.75);
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.slider-label.before-lbl { left: 16px; color: #ff6b6b; }
+.slider-label.after-lbl { right: 16px; color: var(--lime); }
+
+/* ---- UPLOAD TOOL ---- */
+.tool-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 100px 24px;
+}
+
+.tool-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tool-header {
+  text-align: center;
+  margin-bottom: 52px;
+}
+
+.drop-zone {
+  border: 2px dashed var(--border-hover);
+  border-radius: 20px;
+  padding: 64px 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  background: var(--bg);
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--lime);
+  background: rgba(198,241,53,0.03);
+}
+
+.drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.drop-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--bg3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.drop-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--lime);
+  fill: none;
+}
+
+.drop-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.drop-sub {
+  font-size: 14px;
+  color: var(--cream-dim);
+  font-weight: 400;
+}
+
+.drop-formats {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.format-chip {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cream-dim);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Processing state */
+.process-area {
+  display: none;
+  margin-top: 32px;
+}
+
+.process-area.active { display: block; }
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.preview-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.preview-card-label {
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-card-label.orig { color: #ff6b6b; }
+.preview-card-label.clean { color: var(--lime); }
+
+.preview-card-label .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.preview-card img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.tool-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.processing-bar {
+  height: 3px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.processing-bar-fill {
+  height: 100%;
+  background: var(--lime);
+  width: 0%;
+  transition: width 0.4s ease;
+  border-radius: 3px;
+}
+
+/* ---- HOW IT WORKS ---- */
+.how-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 24px;
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin-top: 64px;
+}
+
+.how-steps { display: flex; flex-direction: column; gap: 4px; }
+
+.step-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 24px;
+  border-radius: 14px;
+  transition: background 0.2s;
+  border: 1px solid transparent;
+}
+
+.step-item:hover {
+  background: var(--bg2);
+  border-color: var(--border);
+}
+
+.step-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--lime);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-width: 28px;
+  padding-top: 3px;
+}
+
+.step-body {}
+.step-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.step-desc {
+  font-size: 14px;
+  color: var(--cream-dim);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.how-visual {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.math-block {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 13px;
+  color: var(--cream-dim);
+  line-height: 1.8;
+}
+
+.math-block .eq-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cream-dim);
+  opacity: 0.5;
+  margin-bottom: 8px;
+}
+
+.math-block .eq {
+  color: var(--cream);
+  font-size: 15px;
+}
+
+.math-block .eq .var {
+  color: var(--lime);
+}
+
+/* ---- FEATURES GRID ---- */
+.features-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.feature-card {
+  background: var(--bg2);
+  padding: 32px;
+  transition: background 0.2s;
+}
+
+.feature-card:hover { background: var(--bg3); }
+
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(198,241,53,0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.feature-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--lime);
+  fill: none;
+  stroke-width: 1.8;
+}
+
+.feature-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.feature-desc {
+  font-size: 13px;
+  color: var(--cream-dim);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ---- EXTENSION CTA ---- */
+.ext-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+
+.ext-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.ext-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+
+.ext-title em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--lime);
+}
+
+.ext-desc {
+  font-size: 16px;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 36px;
+}
+
+.ext-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ext-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--cream);
+}
+
+.ext-step-num {
+  width: 24px;
+  height: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--border-hover);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--lime);
+  flex-shrink: 0;
+}
+
+.ext-visual {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.ext-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+.ext-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.ext-tagline {
+  font-size: 13px;
+  color: var(--cream-dim);
+  text-align: center;
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+.ext-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.ext-badge-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border-hover);
+  border-radius: 12px;
+  padding: 14px 20px;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ext-badge-btn:hover {
+  border-color: rgba(240,230,208,0.25);
+  background: var(--bg3);
+}
+
+.ext-badge-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ext-badge-text {}
+.ext-badge-store {
+  font-size: 10px;
+  color: var(--cream-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ext-badge-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+}
+
+/* ---- FOOTER ---- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+}
+
+.footer-note {
+  font-size: 13px;
+  color: var(--cream-dim);
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footer-links a {
+  font-size: 13px;
+  color: var(--cream-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--cream); }
+
+/* ---- TOAST ---- */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--bg3);
+  border: 1px solid var(--border-hover);
+  border-radius: 100px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cream);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast .toast-icon { color: var(--lime); }
+
+/* ---- NAV LOGO ICON ---- */
+.nav-logo-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  nav {
+    padding: 14px 20px;
+    justify-content: center;
+    position: fixed;
+  }
+  .nav-links { display: none; }
+  .hero { padding-top: 100px; }
+  .hero-title { font-size: clamp(34px, 10vw, 60px); }
+  .hero-sub { font-size: 16px; }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 56px;
+  }
+  .stat-item { text-align: left; padding: 14px 16px; background: rgba(17,15,20,0.5); border-radius: 12px; border: 1px solid var(--border); }
+  .stat-num { font-size: 24px; }
+  .stat-label { font-size: 11px; margin-top: 2px; }
+  .stat-divider { display: none; }
+  .how-grid { grid-template-columns: 1fr; }
+  .how-visual { display: none; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .ext-inner { grid-template-columns: 1fr; gap: 40px; }
+  .ext-visual { padding: 24px; }
+  .preview-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+  .demo-header { flex-direction: column; align-items: flex-start; }
+  .tool-section { padding: 60px 16px; }
+  .drop-zone { padding: 40px 20px; }
+  section { padding: 60px 16px; }
+  .demo-section { padding: 0 16px 60px; }
+  .how-section, .features-section { padding: 60px 16px; }
+  .features-section { padding-bottom: 60px; }
+  .ext-inner { padding: 60px 16px; }
+}
+
+@media (max-width: 480px) {
+  .hero-actions { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+  .features-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 0; }
+  .stat-item { min-width: 64px; }
+  nav { padding: 12px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="/favicon.png" class="nav-logo-img" alt="Unwatermark">
+    Unwatermark
+  </a>
+  <ul class="nav-links">
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#tool">Try it</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#extension" class="nav-cta">Get Extension</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    100% Private · Runs in your browser
+  </div>
+  <h1 class="hero-title">
+    Remove Gemini<br>watermark
+    <span class="accent">instantly</span>
+  </h1>
+  <p class="hero-sub">
+    Upload any Gemini AI image and get a perfectly clean version — no uploads to servers, no quality loss, pure mathematics.
+  </p>
+  <div class="hero-actions">
+    <a href="#tool" class="btn-primary">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Remove Watermark
+    </a>
+    <a href="#demo" class="btn-outline">See it in action ↓</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num" style="font-family:'Space Grotesk',sans-serif;">&lt;1ms</div>
+      <div class="stat-label">Server time</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Local processing</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-num">Zero</div>
+      <div class="stat-label">Data collected</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-num">OS</div>
+      <div class="stat-label">Fully Opensource</div>
+    </div>
+  </div>
+</div>
+
+<!-- BEFORE/AFTER DEMO -->
+<section class="demo-section" id="demo">
+  <div class="demo-header">
+    <div>
+      <div class="section-label">Before &amp; After</div>
+      <h2 class="section-title">Drag to compare</h2>
+    </div>
+    <p class="section-sub" style="margin: 0; font-size: 15px;">Real Gemini AI images. The watermark in the bottom-right corner is mathematically reversed — pixel by pixel.</p>
+  </div>
+
+  <div class="slider-wrap" id="slider">
+    <img class="slider-img before" src="/docs/Gemini_Generated_Image_4w7qn64w7qn64w7q_original.png" alt="Before — watermarked" draggable="false">
+    <img class="slider-img after" src="/docs/Gemini_Generated_Image_4w7qn64w7qn64w7q.png" alt="After — clean" draggable="false">
+    <div class="slider-handle" id="sliderHandle"></div>
+    <div class="slider-icon" id="sliderIcon">
+      <svg viewBox="0 0 24 24"><path d="M8 5l-5 7 5 7M16 5l5 7-5 7"/></svg>
+    </div>
+    <span class="slider-label before-lbl">Before</span>
+    <span class="slider-label after-lbl">After</span>
+  </div>
+</section>
+
+<!-- UPLOAD TOOL -->
+<div class="tool-section" id="tool">
+  <div class="tool-inner">
+    <div class="tool-header">
+      <div class="section-label" style="justify-content: center;">Upload Tool</div>
+      <h2 class="section-title" style="text-align: center;">Clean your image now</h2>
+      <p class="section-sub" style="text-align: center; margin: 0 auto; font-size: 15px;">
+        Your image never leaves your device. Everything runs on the Canvas API in your browser.
+      </p>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp">
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+        </svg>
+      </div>
+      <div class="drop-title">Drop your Gemini image here</div>
+      <div class="drop-sub">or click to browse your files</div>
+      <div class="drop-formats">
+        <span class="format-chip">PNG</span>
+        <span class="format-chip">JPG</span>
+        <span class="format-chip">WebP</span>
+      </div>
+    </div>
+
+    <div class="process-area" id="processArea">
+      <div class="processing-bar">
+        <div class="processing-bar-fill" id="progressBar"></div>
+      </div>
+
+      <div class="preview-grid">
+        <div class="preview-card">
+          <div class="preview-card-label orig">
+            <span class="dot"></span>
+            Original (watermarked)
+          </div>
+          <img id="previewBefore" src="" alt="Original">
+        </div>
+        <div class="preview-card">
+          <div class="preview-card-label clean">
+            <span class="dot"></span>
+            Clean (watermark removed)
+          </div>
+          <img id="previewAfter" src="" alt="Clean">
+        </div>
+      </div>
+
+      <div class="tool-actions">
+        <button class="btn-primary" id="downloadBtn" style="display:none">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Clean Image
+        </button>
+        <button class="btn-outline" id="resetBtn">
+          Try another image
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">Reverse alpha blending</h2>
+  <p class="section-sub">Gemini applies its watermark using a known alpha compositing formula. We simply invert it.</p>
+
+  <div class="how-grid">
+    <div class="how-steps">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Detect watermark location</div>
+          <div class="step-desc">Based on image dimensions, the engine determines whether the 48×48 or 96×96 watermark template applies and precisely calculates its bottom-right position.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Build the alpha map</div>
+          <div class="step-desc">A precomputed watermark template is loaded and converted to a per-pixel alpha (opacity) map. Each value tells us how strongly the watermark affected that pixel.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Recover original pixels</div>
+          <div class="step-desc">For each watermarked pixel, the formula <em>C = (C_w − α·255) / (1 − α)</em> reconstructs the original color. Pixels below the alpha threshold are left untouched.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Export as lossless PNG</div>
+          <div class="step-desc">The restored ImageData is written back to a canvas and exported at full resolution. Zero recompression, zero quality loss.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-visual">
+      <div class="math-block">
+        <div class="eq-label">Watermark compositing model</div>
+        <div class="eq">C<sub>w</sub> = <span class="var">α</span> · C<sub>logo</sub> + (1 − <span class="var">α</span>) · C<sub>orig</sub></div>
+      </div>
+      <div class="math-block">
+        <div class="eq-label">Inverse — recover original pixel</div>
+        <div class="eq">C<sub>orig</sub> = (C<sub>w</sub> − <span class="var">α</span> · 255) / (1 − <span class="var">α</span>)</div>
+      </div>
+      <div class="math-block">
+        <div class="eq-label">Constants</div>
+        <div class="eq">
+          α<sub>min</sub> = <span class="var">0.002</span> · α<sub>max</sub> = <span class="var">0.99</span><br>
+          C<sub>logo</sub> = <span class="var">255</span> (white watermark)<br>
+          Sizes: <span class="var">48×48</span> · <span class="var">96×96</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="section-label">Why Unwatermark</div>
+  <h2 class="section-title">Built different</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <div class="feature-title">Zero server contact</div>
+      <div class="feature-desc">Your image is never uploaded anywhere. The Canvas API processes everything locally in your browser tab.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+      </div>
+      <div class="feature-title">Instantaneous results</div>
+      <div class="feature-desc">No round trips, no queues. The math runs in milliseconds regardless of your internet speed.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M9 9.75h.008v.008H9V9.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+      </div>
+      <div class="feature-title">Lossless output</div>
+      <div class="feature-desc">Exported as PNG with no recompression artifacts. You get exactly the pixel quality Gemini produced.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+      </div>
+      <div class="feature-title">No account needed</div>
+      <div class="feature-desc">No sign-up, no cookies, no tracking. Open the page, drop your image, done.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+      <div class="feature-title">Both watermark sizes</div>
+      <div class="feature-desc">Automatically handles the 48×48 variant (smaller images) and 96×96 variant (large 1024+ images).</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
+      </div>
+      <div class="feature-title">Browser extension too</div>
+      <div class="feature-desc">For power users: install the extension and watermarks are stripped automatically every time you hit download on Gemini.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXTENSION CTA -->
+<div class="ext-section" id="extension">
+  <div class="ext-inner">
+    <div>
+      <div class="section-label">Browser Extension</div>
+      <h2 class="ext-title">Want it even <em>faster?</em></h2>
+      <p class="ext-desc">Install the extension once and watermarks vanish automatically every time you download from Gemini — no uploading, no visiting a website, just clean images.</p>
+      <ul class="ext-steps">
+        <li class="ext-step">
+          <span class="ext-step-num">1</span>
+          Install from Edge Add-ons or load the .crx in Chrome
+        </li>
+        <li class="ext-step">
+          <span class="ext-step-num">2</span>
+          Open Gemini AI and generate your image
+        </li>
+        <li class="ext-step">
+          <span class="ext-step-num">3</span>
+          Click download — you get a clean PNG automatically
+        </li>
+      </ul>
+    </div>
+    <div class="ext-visual">
+      <img class="ext-logo" src="/docs/Remover.png" alt="Gemini Watermark Remover logo">
+      <div class="ext-name">Gemini Watermark Remover</div>
+      <div class="ext-tagline">Automatic, silent, zero-setup watermark removal for Gemini AI</div>
+      <div class="ext-badges">
+        <a href="https://microsoftedge.microsoft.com/addons/detail/nlfhgjjionkpldaikdlhmjhhpkjnpmle" target="_blank" class="ext-badge-btn">
+          <img class="ext-badge-icon" src="https://cdn.creazilla.com/icons/3254089/microsoft-edge-icon-md.png" alt="Microsoft Edge" loading="lazy">
+          <div class="ext-badge-text">
+            <div class="ext-badge-store">Microsoft Edge</div>
+            <div class="ext-badge-name">Edge Add-ons Store</div>
+          </div>
+        </a>
+        <a href="/releases/GeminiWRv2.0.1.crx" download class="ext-badge-btn">
+          <img class="ext-badge-icon" src="https://cdn.creazilla.com/icons/3236639/chrome-icon-md.png" alt="Google Chrome" loading="lazy">
+          <div class="ext-badge-text">
+            <div class="ext-badge-store">Google Chrome</div>
+            <div class="ext-badge-name">Download .crx file</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Unwatermark</div>
+  <div class="footer-note">100% local · zero telemetry · open source</div>
+  <ul class="footer-links">
+    <li><a href="https://github.com" target="_blank">GitHub</a></li>
+    <li><a href="#tool">Try it</a></li>
+    <li><a href="#how">How it works</a></li>
+  </ul>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script src="/engine.js"></script>
+<script>
+// ---- BEFORE/AFTER SLIDER ----
+(function () {
+  const wrap = document.getElementById('slider');
+  const handle = document.getElementById('sliderHandle');
+  const icon = document.getElementById('sliderIcon');
+  let dragging = false;
+
+  function setPct(pct) {
+    pct = Math.max(2, Math.min(98, pct));
+    const val = pct + '%';
+    wrap.style.setProperty('--pct', val);
+    handle.style.left = val;
+    icon.style.left = val;
+  }
+
+  setPct(50);
+
+  function getRelativeX(e) {
+    const rect = wrap.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return ((clientX - rect.left) / rect.width) * 100;
+  }
+
+  wrap.addEventListener('mousedown', (e) => { dragging = true; setPct(getRelativeX(e)); });
+  wrap.addEventListener('touchstart', (e) => { dragging = true; setPct(getRelativeX(e)); }, { passive: true });
+  document.addEventListener('mousemove', (e) => { if (dragging) setPct(getRelativeX(e)); });
+  document.addEventListener('touchmove', (e) => { if (dragging) setPct(getRelativeX(e)); }, { passive: true });
+  document.addEventListener('mouseup', () => { dragging = false; });
+  document.addEventListener('touchend', () => { dragging = false; });
+})();
+
+// ---- WATERMARK REMOVAL TOOL ----
+(function () {
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const processArea = document.getElementById('processArea');
+  const previewBefore = document.getElementById('previewBefore');
+  const previewAfter = document.getElementById('previewAfter');
+  const progressBar = document.getElementById('progressBar');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let engine = null;
+  let cleanDataUrl = null;
+  let originalFileName = 'image';
+
+  // Init engine
+  async function initEngine() {
+    if (engine) return engine;
+    engine = new window.WatermarkEngine();
+    await engine.loadBackgroundImages();
+    return engine;
+  }
+
+  // Eager init
+  initEngine().catch(console.warn);
+
+  // Drag over
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleFile(file);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+
+  async function handleFile(file) {
+    originalFileName = file.name.replace(/\.[^.]+$/, '');
+
+    // Show original preview
+    const originalUrl = URL.createObjectURL(file);
+    previewBefore.src = originalUrl;
+    processArea.classList.add('active');
+    previewAfter.src = '';
+    downloadBtn.style.display = 'none';
+    cleanDataUrl = null;
+
+    // Animate progress
+    progressBar.style.width = '0%';
+    setTimeout(() => progressBar.style.width = '40%', 50);
+
+    // Load image
+    const img = new Image();
+    img.src = originalUrl;
+    await new Promise(r => { img.onload = r; img.onerror = r; });
+
+    progressBar.style.width = '70%';
+
+    try {
+      const eng = await initEngine();
+      progressBar.style.width = '90%';
+      const canvas = await eng.removeWatermarkFromImage(img);
+      progressBar.style.width = '100%';
+
+      cleanDataUrl = canvas.toDataURL('image/png');
+      previewAfter.src = cleanDataUrl;
+      downloadBtn.style.display = 'flex';
+
+      showToast('Watermark removed successfully');
+    } catch (err) {
+      console.error(err);
+      showToast('Processing failed — try a different image');
+      progressBar.style.width = '0%';
+    }
+  }
+
+  downloadBtn.addEventListener('click', () => {
+    if (!cleanDataUrl) return;
+    const a = document.createElement('a');
+    a.href = cleanDataUrl;
+    a.download = originalFileName + '_clean.png';
+    a.click();
+    showToast('Downloading clean image…');
+  });
+
+  resetBtn.addEventListener('click', () => {
+    processArea.classList.remove('active');
+    fileInput.value = '';
+    previewBefore.src = '';
+    previewAfter.src = '';
+    cleanDataUrl = null;
+    progressBar.style.width = '0%';
+    downloadBtn.style.display = 'none';
+  });
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+})();
+</script>
+</body>
+</html>
